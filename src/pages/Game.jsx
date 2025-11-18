@@ -6,14 +6,13 @@ import ResultModal from "../components/ResultModal";
 import useTimer from "../hooks/useTimer";
 import { createShuffledCards } from "../utils/shuffle";
 
-export default function Game({ onBack }) {
+export default function Game({ onBack, startTime }) {
   const [cards, setCards] = useState([]);
   const [flippedCards, setFlippedCards] = useState(new Set());
   const [nextNumber, setNextNumber] = useState(1);
   const [isTimerRunning, setIsTimerRunning] = useState(false);
   const [showResult, setShowResult] = useState(false);
   const [wrongCardId, setWrongCardId] = useState(null);
-  const [gameStarted, setGameStarted] = useState(false);
   const { time, reset: resetTimer } = useTimer(isTimerRunning);
 
   useEffect(() => {
@@ -25,19 +24,15 @@ export default function Game({ onBack }) {
     resetTimer();
     setWrongCardId(null);
     
-    // 게임 화면 진입 시 자동으로 게임 시작
-    setGameStarted(true);
-    setIsTimerRunning(true);
-  }, []);
-
-  const handleStartGame = () => {
-    setGameStarted(true);
-    setIsTimerRunning(true);
-  };
+    // startTime이 있으면 바로 게임 시작 (Home에서 게임 시작 버튼 클릭 시)
+    if (startTime) {
+      setIsTimerRunning(true);
+    }
+  }, [startTime]);
 
   const handleCardClick = (number, index) => {
-    // 게임이 시작되지 않았으면 무시
-    if (!gameStarted) {
+    // 타이머가 실행 중이 아니면 무시
+    if (!isTimerRunning) {
       return;
     }
 
@@ -74,7 +69,6 @@ export default function Game({ onBack }) {
     setNextNumber(1);
     setIsTimerRunning(false);
     setShowResult(false);
-    setGameStarted(false);
     resetTimer();
     setWrongCardId(null);
   };
@@ -96,37 +90,14 @@ export default function Game({ onBack }) {
 
         <Timer time={time} />
 
-        {!gameStarted && (
-          <motion.div
-            className="text-center my-8"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            <motion.button
-              onClick={handleStartGame}
-              className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 px-12 rounded-lg text-xl shadow-lg"
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              게임 시작
-            </motion.button>
-            <p className="text-gray-600 mt-4 text-sm">
-              1부터 20까지 순서대로 카드를 클릭하세요!
-            </p>
-          </motion.div>
-        )}
-
-        {gameStarted && (
-          <motion.p
-            className="text-center text-gray-600 mt-4 mb-4 text-sm"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5 }}
-          >
-            1부터 20까지 순서대로 카드를 클릭하세요!
-          </motion.p>
-        )}
+        <motion.p
+          className="text-center text-gray-600 mt-4 mb-4 text-sm"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
+        >
+          1부터 20까지 순서대로 카드를 클릭하세요!
+        </motion.p>
 
         <motion.div
           className="grid grid-cols-4 sm:grid-cols-5 gap-3 max-w-md mx-auto"
