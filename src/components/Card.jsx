@@ -15,7 +15,7 @@ export default function Card({ number, isFlipped, onClick, isWrong }) {
         animate={{
           rotateY: isFlipped ? 180 : 0,
           backgroundColor: isFlipped 
-            ? "#4ade80" 
+            ? "#6b7280" 
             : isWrong 
             ? "#f87171" 
             : "#c7d2fe",
@@ -38,9 +38,9 @@ export default function Card({ number, isFlipped, onClick, isWrong }) {
           transition={{ duration: 0.3 }}
         >
           {isFlipped ? (
-            <span className="text-white">{number}</span>
+            <span className="text-white opacity-0">{number}</span>
           ) : (
-            <span className="text-indigo-600 opacity-50">?</span>
+            <span className="text-indigo-600 font-bold">{number}</span>
           )}
         </motion.div>
       </motion.div>
