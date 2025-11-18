@@ -21,11 +21,13 @@ export default function Game({ onBack }) {
     setCards(createShuffledCards());
     setFlippedCards(new Set());
     setNextNumber(1);
-    setIsTimerRunning(false);
     setShowResult(false);
-    setGameStarted(false);
     resetTimer();
     setWrongCardId(null);
+    
+    // 게임 화면 진입 시 자동으로 게임 시작
+    setGameStarted(true);
+    setIsTimerRunning(true);
   }, []);
 
   const handleStartGame = () => {
@@ -113,6 +115,17 @@ export default function Game({ onBack }) {
               1부터 20까지 순서대로 카드를 클릭하세요!
             </p>
           </motion.div>
+        )}
+
+        {gameStarted && (
+          <motion.p
+            className="text-center text-gray-600 mt-4 mb-4 text-sm"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+          >
+            1부터 20까지 순서대로 카드를 클릭하세요!
+          </motion.p>
         )}
 
         <motion.div
